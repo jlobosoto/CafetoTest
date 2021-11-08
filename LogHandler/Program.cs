@@ -2,12 +2,15 @@
 using LoggerHandler.Database;
 using LoggerHandler.DTO.Requests;
 using LoggerHandler.Services;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using System;
 using System.Collections;
+using System.Configuration;
 using System.IO;
 
 // DI, Serilog, Settings
@@ -20,7 +23,6 @@ namespace LoggerHandler
         {
             var builder = new ConfigurationBuilder();
             BuildConfig(builder);
-
             Log.Logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(builder.Build())
                 .Enrich.FromLogContext()
@@ -28,16 +30,17 @@ namespace LoggerHandler
                 .CreateLogger();
 
             Log.Logger.Information("Application Starting");
-
+            
             var host = Host.CreateDefaultBuilder()
                 .ConfigureServices((context, services) =>
                 {
                     services.AddSingleton<IMessageService, MessageService>();
-                    services.AddDbContext<MessageDbContext>();
+                    services.AddDbContext<MessageDbContext>(options=>options.UseSqlServer(context.Configuration.GetValue<string>("DBLogs"))
+                    .EnableSensitiveDataLogging(false));
                 })
                 .UseSerilog()
                 .Build();
-
+            
 
             Console.WriteLine("Please write your log message:");
             var description = Console.ReadLine();
@@ -74,6 +77,16 @@ namespace LoggerHandler
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json", optional: true)
                 .AddEnvironmentVariables();
+        }
+        public class BloggingContextFactory : IDesignTimeDbContextFactory<MessageDbContext>
+        {
+            public MessageDbContext CreateDbContext(string[] args)
+            {
+                var optionsBuilder = new DbContextOptionsBuilder<MessageDbContext>();
+                optionsBuilder.UseSqlServer("Data Source=MNB407\\SQLEXPRESS;Initial Catalog=Test;Integrated Security=True");
+                //since is a console app was neccesary to create this class for EF purposes. Not sure how to get Iconfiguration instance to get connetionstring.
+                return new MessageDbContext(optionsBuilder.Options);
+            }
         }
     }
 }

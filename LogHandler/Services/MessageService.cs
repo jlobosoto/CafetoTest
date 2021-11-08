@@ -1,4 +1,5 @@
-﻿using LoggerHandler.DTO.Requests;
+﻿using LoggerHandler.Database;
+using LoggerHandler.DTO.Requests;
 using LoggerHandler.Exceptions;
 using LoggerHandler.Jobs;
 using Microsoft.Extensions.Configuration;
@@ -11,11 +12,13 @@ namespace LoggerHandler.Services
     {
         private readonly ILogger<DBLogger> _log;
         private readonly IConfiguration _config;
+        private readonly MessageDbContext _dbContext;
 
-        public MessageService(ILogger<DBLogger> log, IConfiguration config)
+        public MessageService(ILogger<DBLogger> log, IConfiguration config, MessageDbContext dbContext)
         {
             _log = log;
             _config = config;
+            _dbContext = dbContext;
         }
 
         public void LogMessage(MessageRequestDTO message)
@@ -33,7 +36,7 @@ namespace LoggerHandler.Services
                         logger = new LocalFileLogger(_config);
                         break;
                     case Constants.Destination.DataBase:
-                        logger = new DBLogger(_log, _config);
+                        logger = new DBLogger(_log, _dbContext);
                         break;
                     default:
                         break;

@@ -4,7 +4,6 @@ using LoggerHandler.Exceptions;
 using LoggerHandler.Models;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -18,9 +17,9 @@ namespace LoggerHandler.Jobs
         private readonly MessageDbContext _dbContext;
         private readonly ILogger<DBLogger> _log;
 
-        public DBLogger(ILogger<DBLogger> log, IConfiguration config)
+        public DBLogger(ILogger<DBLogger> log, MessageDbContext dbContext)
         {
-            _dbContext = new MessageDbContext(config);
+            _dbContext = dbContext;
             _log = log;
         }
         public async Task LogMessage(MessageRequestDTO message)

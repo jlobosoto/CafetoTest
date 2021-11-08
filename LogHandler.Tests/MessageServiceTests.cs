@@ -30,7 +30,7 @@ namespace LogHandler.Tests
                 MessageType=MessageType.Information
             };
             var currentConsoleOut = Console.Out;
-            var messageService = new MessageService(_log.Object,configuration);
+            var messageService = new MessageService(_log.Object,configuration,dbContext);
 
             using (var consoleOutput = new ConsoleOutput())
             {
@@ -61,7 +61,7 @@ namespace LogHandler.Tests
                 .Build();
 
             var currentConsoleOut = Console.Out;
-            var messageService = new MessageService(_log.Object, configuration);
+            var messageService = new MessageService(_log.Object, configuration,dbContext);
 
             using (var consoleOutput = new ConsoleOutput())
             {

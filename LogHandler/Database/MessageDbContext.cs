@@ -6,18 +6,10 @@ namespace LoggerHandler.Database
 {
     public class MessageDbContext: DbContext
     {
-        private readonly IConfiguration _config;
 
-        public MessageDbContext(IConfiguration config)
+        public MessageDbContext(DbContextOptions<MessageDbContext> options) : base(options)
         {
 
-            _config = config;
-        }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder.UseSqlServer(_config.GetValue<string>("DBLogs"))
-                .EnableSensitiveDataLogging(true);      
         }
         public DbSet<Message> Messages { get; set; }
     }
