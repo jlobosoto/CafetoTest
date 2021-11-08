@@ -6,6 +6,7 @@ using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -31,7 +32,7 @@ namespace LoggerHandler.Jobs
                 _dbContext.Messages.Add(record);
                 _dbContext.SaveChanges();
 
-                _log.LogInformation("Log Saved in DB.");
+                Console.WriteLine("Log Saved in DB.");
             }
             catch (LoggerException e)
             {
@@ -40,6 +41,7 @@ namespace LoggerHandler.Jobs
             }
         }
 
+        //Not implemented due to test requirements
         public async Task<List<Message>> GetMessages()
         {
             var messages = await _dbContext.Messages.ToListAsync();

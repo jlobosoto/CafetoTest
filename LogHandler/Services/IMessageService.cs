@@ -1,6 +1,6 @@
 ﻿using LoggerHandler.DTO.Requests;
 
-namespace LoggerHandler
+namespace LoggerHandler.Services
 {
     public interface IMessageService
     {

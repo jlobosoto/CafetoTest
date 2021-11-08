@@ -1,4 +1,5 @@
 ﻿using LoggerHandler.Constants;
+using LoggerHandler.Database;
 using LoggerHandler.DTO.Requests;
 using LoggerHandler.Services;
 using Microsoft.Extensions.Configuration;
@@ -32,6 +33,7 @@ namespace LoggerHandler
                 .ConfigureServices((context, services) =>
                 {
                     services.AddSingleton<IMessageService, MessageService>();
+                    services.AddDbContext<MessageDbContext>();
                 })
                 .UseSerilog()
                 .Build();
